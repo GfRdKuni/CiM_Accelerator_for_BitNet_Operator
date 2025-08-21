@@ -116,97 +116,97 @@ module Preprocesser(
     // Saturation
     always @(*) begin
         if(~LUT_entries_0[31] && |LUT_entries_0[30:15]) LUT_entries_0_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_0[31] && &LUT_entries_0[30:15]) LUT_entries_0_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_0[31] && ~(&LUT_entries_0[30:15])) LUT_entries_0_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_0_sat = LUT_entries_0[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_1[31] && |LUT_entries_1[30:15]) LUT_entries_1_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_1[31] && &LUT_entries_1[30:15]) LUT_entries_1_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_1[31] && ~(&LUT_entries_1[30:15])) LUT_entries_1_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_1_sat = LUT_entries_1[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_2[31] && |LUT_entries_2[30:15]) LUT_entries_2_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_2[31] && &LUT_entries_2[30:15]) LUT_entries_2_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_2[31] && ~(&LUT_entries_2[30:15])) LUT_entries_2_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_2_sat = LUT_entries_2[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_3[31] && |LUT_entries_3[30:15]) LUT_entries_3_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_3[31] && &LUT_entries_3[30:15]) LUT_entries_3_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_3[31] && ~(&LUT_entries_3[30:15])) LUT_entries_3_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_3_sat = LUT_entries_3[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_4[31] && |LUT_entries_4[30:15]) LUT_entries_4_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_4[31] && &LUT_entries_4[30:15]) LUT_entries_4_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_4[31] && ~(&LUT_entries_4[30:15])) LUT_entries_4_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_4_sat = LUT_entries_4[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_5[31] && |LUT_entries_5[30:15]) LUT_entries_5_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_5[31] && &LUT_entries_5[30:15]) LUT_entries_5_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_5[31] && ~(&LUT_entries_5[30:15])) LUT_entries_5_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_5_sat = LUT_entries_5[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_6[31] && |LUT_entries_6[30:15]) LUT_entries_6_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_6[31] && &LUT_entries_6[30:15]) LUT_entries_6_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_6[31] && ~(&LUT_entries_6[30:15])) LUT_entries_6_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_6_sat = LUT_entries_6[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_7[31] && |LUT_entries_7[30:15]) LUT_entries_7_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_7[31] && &LUT_entries_7[30:15]) LUT_entries_7_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_7[31] && ~(&LUT_entries_7[30:15])) LUT_entries_7_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_7_sat = LUT_entries_7[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_8[31] && |LUT_entries_8[30:15]) LUT_entries_8_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_8[31] && &LUT_entries_8[30:15]) LUT_entries_8_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_8[31] && ~(&LUT_entries_8[30:15])) LUT_entries_8_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_8_sat = LUT_entries_8[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_9[31] && |LUT_entries_9[30:15]) LUT_entries_9_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_9[31] && &LUT_entries_9[30:15]) LUT_entries_9_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_9[31] && ~(&LUT_entries_9[30:15])) LUT_entries_9_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_9_sat = LUT_entries_9[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_10[31] && |LUT_entries_10[30:15]) LUT_entries_10_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_10[31] && &LUT_entries_10[30:15]) LUT_entries_10_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_10[31] && ~(&LUT_entries_10[30:15])) LUT_entries_10_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_10_sat = LUT_entries_10[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_11[31] && |LUT_entries_11[30:15]) LUT_entries_11_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_11[31] && &LUT_entries_11[30:15]) LUT_entries_11_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_11[31] && ~(&LUT_entries_11[30:15])) LUT_entries_11_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_11_sat = LUT_entries_11[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_12[31] && |LUT_entries_12[30:15]) LUT_entries_12_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_12[31] && &LUT_entries_12[30:15]) LUT_entries_12_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_12[31] && ~(&LUT_entries_12[30:15])) LUT_entries_12_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_12_sat = LUT_entries_12[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_13[31] && |LUT_entries_13[30:15]) LUT_entries_13_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_13[31] && &LUT_entries_13[30:15]) LUT_entries_13_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_13[31] && ~(&LUT_entries_13[30:15])) LUT_entries_13_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_13_sat = LUT_entries_13[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_14[31] && |LUT_entries_14[30:15]) LUT_entries_14_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_14[31] && &LUT_entries_14[30:15]) LUT_entries_14_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_14[31] && ~(&LUT_entries_14[30:15])) LUT_entries_14_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_14_sat = LUT_entries_14[15:0];
     end
 
     always @(*) begin
         if(~LUT_entries_15[31] && |LUT_entries_15[30:15]) LUT_entries_15_sat = 16'b0111_1111_1111_1111;
-        else if (LUT_entries_15[31] && &LUT_entries_15[30:15]) LUT_entries_15_sat = 16'b1000_0000_0000_0000;
+        else if (LUT_entries_15[31] && ~(&LUT_entries_15[30:15])) LUT_entries_15_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_15_sat = LUT_entries_15[15:0];
     end
     

@@ -22,50 +22,55 @@
 
 module Top(
     // 全局信号
-    input  wire          clk           ,  // 时钟信号
-    input  wire          rst_n_i       ,  // 异步复位信号（低有效）
+    input  wire          clk               ,  // 时钟信号
+    input  wire          rst_n_i           ,  // 异步复位信号（低有效）
     
     // 外部输入信号
-    input  wire          valid_in_i    ,  // 输入有效信号
-    input  wire          ready_out_i   ,  // 外部就绪信号
-    input  wire  [255:0] data_i_act    ,  // 激活数据输入
-    input  wire  [255:0] data_i_wm     ,  // 权重矩阵数据输入
-    input  wire  [255:0] data_i_ws     ,  // 权重标量数据输入
+    input  wire          valid_in_i_act    ,  // 输入有效信号
+    input  wire          valid_in_i_wm     ,  // 输入有效信号
+    input  wire          valid_in_i_ws     ,  // 输入有效信号
+    input  wire          ready_out_i       ,  // 外部就绪信号
+
+    input  wire  [255:0] data_i_act        ,  // 激活数据输入
+    input  wire  [255:0] data_i_wm         ,  // 权重矩阵数据输入
+    input  wire  [255:0] data_i_ws         ,  // 权重标量数据输入
     
     // 外部输出信号
-    output wire          valid_out_o   ,  // 输出有效信号
-    output wire          ready_in_o    ,  // 内部就绪信号
-    output wire  [31:0]  result_0_o    ,  // 运算结果输出0
-    output wire  [31:0]  result_1_o    ,  // 运算结果输出1
-    output wire  [31:0]  result_2_o    ,  // 运算结果输出2
-    output wire  [31:0]  result_3_o    ,  // 运算结果输出3
-    output wire  [31:0]  result_4_o    ,  // 运算结果输出4
-    output wire  [31:0]  result_5_o    ,  // 运算结果输出5
-    output wire  [31:0]  result_6_o    ,  // 运算结果输出6
-    output wire  [31:0]  result_7_o    ,  // 运算结果输出7
-    output wire  [31:0]  result_8_o    ,  // 运算结果输出8
-    output wire  [31:0]  result_9_o    ,  // 运算结果输出9
-    output wire  [31:0]  result_10_o   ,  // 运算结果输出10
-    output wire  [31:0]  result_11_o   ,  // 运算结果输出11
-    output wire  [31:0]  result_12_o   ,  // 运算结果输出12
-    output wire  [31:0]  result_13_o   ,  // 运算结果输出13
-    output wire  [31:0]  result_14_o   ,  // 运算结果输出14
-    output wire  [31:0]  result_15_o   ,  // 运算结果输出15
-    output wire  [31:0]  result_16_o   ,  // 运算结果输出16
-    output wire  [31:0]  result_17_o   ,  // 运算结果输出17
-    output wire  [31:0]  result_18_o   ,  // 运算结果输出18
-    output wire  [31:0]  result_19_o   ,  // 运算结果输出19
-    output wire  [31:0]  result_20_o   ,  // 运算结果输出20
-    output wire  [31:0]  result_21_o   ,  // 运算结果输出21
-    output wire  [31:0]  result_22_o   ,  // 运算结果输出22
-    output wire  [31:0]  result_23_o   ,  // 运算结果输出23
-    output wire  [31:0]  result_24_o   ,  // 运算结果输出24
-    output wire  [31:0]  result_25_o   ,  // 运算结果输出25
-    output wire  [31:0]  result_26_o   ,  // 运算结果输出26
-    output wire  [31:0]  result_27_o   ,  // 运算结果输出27
-    output wire  [31:0]  result_28_o   ,  // 运算结果输出28
-    output wire  [31:0]  result_29_o   ,  // 运算结果输出29
-    output wire  [31:0]  result_30_o   ,  // 运算结果输出30
+    output wire          valid_out_o       ,  // 输出有效信号
+    output wire          ready_in_o_act    ,  // 内部就绪信号
+    output wire          ready_in_o_wm     ,  // 内部就绪信号
+    output wire          ready_in_o_ws     ,  // 内部就绪信号
+    output wire  [31:0]  result_0_o        ,  // 运算结果输出0
+    output wire  [31:0]  result_1_o        ,  // 运算结果输出1
+    output wire  [31:0]  result_2_o        ,  // 运算结果输出2
+    output wire  [31:0]  result_3_o        ,  // 运算结果输出3
+    output wire  [31:0]  result_4_o        ,  // 运算结果输出4
+    output wire  [31:0]  result_5_o        ,  // 运算结果输出5
+    output wire  [31:0]  result_6_o        ,  // 运算结果输出6
+    output wire  [31:0]  result_7_o        ,  // 运算结果输出7
+    output wire  [31:0]  result_8_o        ,  // 运算结果输出8
+    output wire  [31:0]  result_9_o        ,  // 运算结果输出9
+    output wire  [31:0]  result_10_o       ,  // 运算结果输出10
+    output wire  [31:0]  result_11_o       ,  // 运算结果输出11
+    output wire  [31:0]  result_12_o       ,  // 运算结果输出12
+    output wire  [31:0]  result_13_o       ,  // 运算结果输出13
+    output wire  [31:0]  result_14_o       ,  // 运算结果输出14
+    output wire  [31:0]  result_15_o       ,  // 运算结果输出15
+    output wire  [31:0]  result_16_o       ,  // 运算结果输出16
+    output wire  [31:0]  result_17_o       ,  // 运算结果输出17
+    output wire  [31:0]  result_18_o       ,  // 运算结果输出18
+    output wire  [31:0]  result_19_o       ,  // 运算结果输出19
+    output wire  [31:0]  result_20_o       ,  // 运算结果输出20
+    output wire  [31:0]  result_21_o       ,  // 运算结果输出21
+    output wire  [31:0]  result_22_o       ,  // 运算结果输出22
+    output wire  [31:0]  result_23_o       ,  // 运算结果输出23
+    output wire  [31:0]  result_24_o       ,  // 运算结果输出24
+    output wire  [31:0]  result_25_o       ,  // 运算结果输出25
+    output wire  [31:0]  result_26_o       ,  // 运算结果输出26
+    output wire  [31:0]  result_27_o       ,  // 运算结果输出27
+    output wire  [31:0]  result_28_o       ,  // 运算结果输出28
+    output wire  [31:0]  result_29_o       ,  // 运算结果输出29
+    output wire  [31:0]  result_30_o       ,  // 运算结果输出30
     output wire  [31:0]  result_31_o     // 运算结果输出31
 );
 
@@ -105,11 +110,15 @@ wire          oprand_sel    ;  // 操作数选择信号
 Ctrl_top u_Ctrl_top(
     .clk           (clk           ),
     .rst_n_i       (rst_n_i       ),
-    .valid_in_i    (valid_in_i    ),
+    .valid_in_i_act(valid_in_i_act),
+    .valid_in_i_wm (valid_in_i_wm ),
+    .valid_in_i_ws (valid_in_i_ws ),
     .ready_out_i   (ready_out_i   ),
     
     .valid_out_o   (valid_out_o   ),
-    .ready_in_o    (ready_in_o    ),
+    .ready_in_o_act(ready_in_o_act),  
+    .ready_in_o_wm (ready_in_o_wm ),
+    .ready_in_o_ws (ready_in_o_ws ),
     .dff_en_i      (dff_en_i      ),
     .dff_en_i_q_o  (dff_en_i_q_o  ),
     .acc_dff_en_i  (acc_dff_en_i  ),

@@ -24,12 +24,16 @@ module Ctrl_top(
     // 输入接口
     input  wire          clk           ,  // 时钟信号
     input  wire          rst_n_i       ,  // 异步复位信号（低有效）
-    input  wire          valid_in_i    ,  // 输入有效信号
+    input  wire          valid_in_i_act,  // 输入有效信号
+    input  wire          valid_in_i_wm ,  // 输入有效信号
+    input  wire          valid_in_i_ws ,  // 输入有效信号
     input  wire          ready_out_i   ,  // 外部就绪信号
     
     // 输出接口
     output reg           valid_out_o   ,  // 输出有效信号
-    output wire          ready_in_o    ,  // 内部就绪信号
+    output wire          ready_in_o_act,  // 内部就绪信号
+    output wire          ready_in_o_wm ,  // 内部就绪信号
+    output wire          ready_in_o_ws ,  // 内部就绪信号
     output wire          dff_en_i      ,  // D触发器使能信号
     output wire          dff_en_i_q_o  ,  // D触发器使能信号的延迟版本
     output wire          acc_dff_en_i  ,  // 输出D触发器使能信号,这个信号实际是累加器内部的寄存器的使能信号
@@ -171,9 +175,9 @@ module Ctrl_top(
     assign w_act_pos_0 = ((state == LOAD_ACT) && ((ACT_LOAD_cnt == 4'd3) || (ACT_LOAD_cnt == 4'd6) || (ACT_LOAD_cnt == 4'd9))) || ((state == IDLE) && ACT_LOAD_cnt == 4'd0);
     assign w_act_pos_1 = ((state == LOAD_ACT) && ((ACT_LOAD_cnt == 4'd1) || (ACT_LOAD_cnt == 4'd4) || (ACT_LOAD_cnt == 4'd7) || (ACT_LOAD_cnt == 4'd10)));
     assign w_act_pos_2 = ((state == LOAD_ACT) && ((ACT_LOAD_cnt == 4'd2) || (ACT_LOAD_cnt == 4'd5) || (ACT_LOAD_cnt == 4'd8) || (ACT_LOAD_cnt == 4'd11)));
-    assign ASRAM_wen0 = w_act_pos_0 && valid_in_i && ready_in_o;
-    assign ASRAM_wen1 = w_act_pos_1 && valid_in_i && ready_in_o;
-    assign ASRAM_wen2 = w_act_pos_2 && valid_in_i && ready_in_o;
+    assign ASRAM_wen0 = w_act_pos_0 && valid_in_i_act && ready_in_o_act;
+    assign ASRAM_wen1 = w_act_pos_1 && valid_in_i_act && ready_in_o_act;
+    assign ASRAM_wen2 = w_act_pos_2 && valid_in_i_act && ready_in_o_act;
     
     always @(*) begin
         if (ASRAM_wen0)
@@ -194,6 +198,7 @@ module Ctrl_top(
                 4'd1 : ASRAM_waddr1 = 2'b00;
                 4'd4 : ASRAM_waddr1 = 2'b01;
                 4'd7 : ASRAM_waddr1 = 2'b10;
+                4'd10: ASRAM_waddr1 = 2'b11;
                 default : ASRAM_waddr1 = 2'b00;
             endcase
         else
@@ -206,6 +211,7 @@ module Ctrl_top(
                 4'd2 : ASRAM_waddr2 = 2'b00;
                 4'd5 : ASRAM_waddr2 = 2'b01;
                 4'd8 : ASRAM_waddr2 = 2'b10;
+                4'd11: ASRAM_waddr2 = 2'b11;
                 default : ASRAM_waddr2 = 2'b00;
             endcase
         else
@@ -233,14 +239,14 @@ module Ctrl_top(
     assign w_wm_pos_1 = (state == LOAD_WM) && (WM_LOAD_cnt[1:0] == 2'b01);
     assign w_wm_pos_2 = (state == LOAD_WM) && (WM_LOAD_cnt[1:0] == 2'b10);
     assign w_wm_pos_3 = (state == LOAD_WM) && (WM_LOAD_cnt[1:0] == 2'b11);
-    assign WMSRAM_wen0 = w_wm_pos_0 && valid_in_i && ready_in_o;
-    assign WMSRAM_wen1 = w_wm_pos_1 && valid_in_i && ready_in_o;
-    assign WMSRAM_wen2 = w_wm_pos_2 && valid_in_i && ready_in_o;
-    assign WMSRAM_wen3 = w_wm_pos_3 && valid_in_i && ready_in_o;
-    assign WMSRAM_waddr0 = WM_LOAD_cnt[6:2] && (ASRAM_wen0);
-    assign WMSRAM_waddr1 = WM_LOAD_cnt[6:2] && (ASRAM_wen1);
-    assign WMSRAM_waddr2 = WM_LOAD_cnt[6:2] && (ASRAM_wen2);
-    assign WMSRAM_waddr3 = WM_LOAD_cnt[6:2] && (ASRAM_wen0);
+    assign WMSRAM_wen0 = w_wm_pos_0 && valid_in_i_wm && ready_in_o_wm;
+    assign WMSRAM_wen1 = w_wm_pos_1 && valid_in_i_wm && ready_in_o_wm;
+    assign WMSRAM_wen2 = w_wm_pos_2 && valid_in_i_wm && ready_in_o_wm;
+    assign WMSRAM_wen3 = w_wm_pos_3 && valid_in_i_wm && ready_in_o_wm;
+    assign WMSRAM_waddr0 = WM_LOAD_cnt[6:2] & ({5{WMSRAM_wen0}});
+    assign WMSRAM_waddr1 = WM_LOAD_cnt[6:2] & ({5{WMSRAM_wen1}});
+    assign WMSRAM_waddr2 = WM_LOAD_cnt[6:2] & ({5{WMSRAM_wen2}});
+    assign WMSRAM_waddr3 = WM_LOAD_cnt[6:2] & ({5{WMSRAM_wen3}});
 
     // LOAD_WS
     always @(posedge clk or negedge rst_n_i) begin
@@ -258,17 +264,19 @@ module Ctrl_top(
         end
     end
 
-    assign WSSRAM_wen = (state == LOAD_WS) && valid_in_i && ready_in_o;
-    assign WSSRAM_waddr = WS_LOAD_cnt && (WSSRAM_wen);
+    assign WSSRAM_wen = (state == LOAD_WS) && valid_in_i_ws && ready_in_o_ws;
+    assign WSSRAM_waddr = WS_LOAD_cnt & ({5{WSSRAM_wen}});
 
     // ready_in_o
-    assign ready_in_o = (state == IDLE || state == LOAD_ACT || state == LOAD_WM || state == LOAD_WS);
+    assign ready_in_o_act = (state == IDLE || state == LOAD_ACT);
+    assign ready_in_o_wm  = (state == LOAD_WM);
+    assign ready_in_o_ws  = (state == LOAD_WS);
 
     // SYS_INIT0 & SYS_INIT1 & CALC
-    assign ASRAM_ren_in  = (state == SYS_INIT0 || state == SYS_INIT1 || state == CALC) && (Act_Input_cnt    != 6'd31) && (~valid_out_o);
-    assign ASRAM_ren_out = (state == SYS_INIT1 ||                       state == CALC) && (Weight_Input_cnt != 6'd32) && (~valid_out_o);
-    assign WMSRAM_ren_in = (state == SYS_INIT1 ||                       state == CALC) && (Weight_Input_cnt != 6'd32) && (~valid_out_o);
-    assign WSSRAM_ren_in = (state == SYS_INIT1 ||                       state == CALC) && (Weight_Input_cnt != 6'd32) && (~valid_out_o);
+    assign ASRAM_ren_in  = (state == SYS_INIT0 || state == SYS_INIT1 || state == CALC) && (Act_Input_cnt    != 6'd32) && (~valid_out_o);
+    assign ASRAM_ren_out = (                      state == SYS_INIT1 || state == CALC) && (Weight_Input_cnt != 6'd32) && (~valid_out_o);
+    assign WMSRAM_ren_in = (                      state == SYS_INIT1 || state == CALC) && (Weight_Input_cnt != 6'd32) && (~valid_out_o);
+    assign WSSRAM_ren_in = (                      state == SYS_INIT1 || state == CALC) && (Weight_Input_cnt != 6'd32) && (~valid_out_o);
     // Contact directly with the calc module
     assign WSSRAM_ren_out= (state == CALC && Input_cnt != 6'd32) && (~valid_out_o);
     assign dff_en_i      = (state == CALC && Input_cnt != 6'd32) && (~valid_out_o); 
