@@ -135,7 +135,7 @@ module Data_top(
         .doutb (ASRAM_dout[767:512])  
     );
 
-    wire signed [15:0] pre_LUT_o [7:0][15:0];
+    wire signed [31:0] pre_LUT_o [7:0][7:0];
 
     generate
     genvar j;
@@ -155,15 +155,7 @@ module Data_top(
             .LUT_entries_4_o     (pre_LUT_o[j][4])                  ,
             .LUT_entries_5_o     (pre_LUT_o[j][5])                  ,
             .LUT_entries_6_o     (pre_LUT_o[j][6])                  ,
-            .LUT_entries_7_o     (pre_LUT_o[j][7])                  ,
-            .LUT_entries_8_o     (pre_LUT_o[j][8])                  ,
-            .LUT_entries_9_o     (pre_LUT_o[j][9])                  ,
-            .LUT_entries_10_o    (pre_LUT_o[j][10])                 ,
-            .LUT_entries_11_o    (pre_LUT_o[j][11])                 ,
-            .LUT_entries_12_o    (pre_LUT_o[j][12])                 ,
-            .LUT_entries_13_o    (pre_LUT_o[j][13])                 ,
-            .LUT_entries_14_o    (pre_LUT_o[j][14])                 ,
-            .LUT_entries_15_o    (pre_LUT_o[j][15])
+            .LUT_entries_7_o     (pre_LUT_o[j][7])                  
         );
     end
     endgenerate
@@ -186,14 +178,6 @@ module Data_top(
                     .lut_0_5_i (pre_LUT_o[i][5])                    ,
                     .lut_0_6_i (pre_LUT_o[i][6])                    ,
                     .lut_0_7_i (pre_LUT_o[i][7])                    ,
-                    .lut_0_8_i (pre_LUT_o[i][8])                    ,
-                    .lut_0_9_i (pre_LUT_o[i][9])                    ,
-                    .lut_0_10_i(pre_LUT_o[i][10])                   ,
-                    .lut_0_11_i(pre_LUT_o[i][11])                   ,
-                    .lut_0_12_i(pre_LUT_o[i][12])                   ,
-                    .lut_0_13_i(pre_LUT_o[i][13])                   ,
-                    .lut_0_14_i(pre_LUT_o[i][14])                   ,
-                    .lut_0_15_i(pre_LUT_o[i][15])                   ,
                     .weight_i  (WM[4*i + 32*j + 3:4*i + 32*j])      ,                            
                     .lut_o     (LUT_MUX_result[i][j])
                 );
@@ -206,8 +190,10 @@ module Data_top(
 
     // 例化8×32个Sign_Gen模块
 
-    wire [15:0]        signed_result_d [7:0][31:0];
-    wire [15:0]        signed_result   [7:0][31:0];
+    wire [15:0]        result_magnitude_d [7:0][31:0];
+    wire [15:0]        result_magnitude   [7:0][31:0];
+    wire               result_sign_d      [7:0][31:0];
+    wire               result_sign        [7:0][31:0];
     wire [255:0]       WS                         ;        // 256位外部sign信号,连接到存储器
     wire [255:0]       WSSRAM_dout                ;
     assign WS        = WSSRAM_dout                ;
@@ -218,10 +204,13 @@ module Data_top(
         for (j = 0; j < 32; j = j + 1) begin : sign_gen_col
             Sign_Gen u_Sign_Gen (
                 .partial_result  (LUT_MUX_result[i][j])        ,     // 第i,j个输入来自pre_LUT_o[i][j]
-                .sign            (WS[8*j+i])                ,     // 第i,j个模块的sign信号来自WS[32*i + j]
-                .signed_result   (signed_result_d[i][j])               // 输出到第i,j个结果
+                .sign            (WS[8*j+i])                   ,     // 第i,j个模块的sign信号来自WS[32*i + j]
+                .result_magnitude(result_magnitude_d[i][j])    ,     // 输出到第i,j个结果
+                .result_sign     (result_sign_d[i][j])
             );
-            dff  #(16) u_sign_gen_dff (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i_q_o), .d_i(signed_result_d[i][j]), .q_o(signed_result[i][j]));
+            dff  #(16) u_sign_gen_dff  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i_q_o), .d_i(result_magnitude_d[i][j]), .q_o(result_magnitude[i][j]));
+            dff  #(1)  u_sign_gen_dff2 (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i_q_o), .d_i(result_sign_d[i][j]),
+                .q_o(result_sign[i][j]));
         end
     end
     endgenerate
@@ -310,9 +299,11 @@ module Data_top(
         for (j = 0; j < 32; j = j + 1) begin : Adder_Tree_Array
             Adder_Tree_8_to_1 u_Adder_Tree_8_to_1 (
                 // 将8个16位数据拼接为128位向量（顺序与模块内部拆分对应）
-                .in_vec ( {signed_result[7][j], signed_result[6][j], signed_result[5][j], signed_result[4][j],
-                           signed_result[3][j], signed_result[2][j], signed_result[1][j], signed_result[0][j]} ),
-                .out    ( tree_result[j] )  // 输出当前j的累加结果
+                .in_vec   ( {result_magnitude[7][j], result_magnitude[6][j], result_magnitude[5][j], result_magnitude[4][j],
+                           result_magnitude[3][j], result_magnitude[2][j], result_magnitude[1][j], result_magnitude[0][j]} ),
+                .sign_vec ( {result_sign[7][j], result_sign[6][j], result_sign[5][j], result_sign[4][j],
+                           result_sign[3][j], result_sign[2][j], result_sign[1][j], result_sign[0][j]} ),
+                .out      ( tree_result[j] )  // 输出当前j的累加结果
             );
         end
     endgenerate

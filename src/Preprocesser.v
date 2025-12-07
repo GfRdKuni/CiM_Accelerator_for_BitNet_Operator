@@ -27,14 +27,15 @@ module Preprocesser(
     input  wire signed [31:0] Act1_i              ,
     input  wire signed [31:0] Act2_i              ,
     input  wire               dff_en_i            ,
-    output wire  signed [15:0] LUT_entries_0_o     ,
-    output wire  signed [15:0] LUT_entries_1_o     ,
-    output wire  signed [15:0] LUT_entries_2_o     ,
-    output wire  signed [15:0] LUT_entries_3_o     ,
-    output wire  signed [15:0] LUT_entries_4_o     ,
-    output wire  signed [15:0] LUT_entries_5_o     ,
-    output wire  signed [15:0] LUT_entries_6_o     ,
-    output wire  signed [15:0] LUT_entries_7_o     ,
+    output wire  signed [31:0] LUT_entries_0_o     ,
+    output wire  signed [31:0] LUT_entries_1_o     ,
+    output wire  signed [31:0] LUT_entries_2_o     ,
+    output wire  signed [31:0] LUT_entries_3_o     ,
+    output wire  signed [31:0] LUT_entries_4_o     ,
+    output wire  signed [31:0] LUT_entries_5_o     ,
+    output wire  signed [31:0] LUT_entries_6_o     ,
+    output wire  signed [31:0] LUT_entries_7_o     
+    /*
     output wire  signed [15:0] LUT_entries_8_o     ,
     output wire  signed [15:0] LUT_entries_9_o     ,
     output wire  signed [15:0] LUT_entries_10_o    ,
@@ -43,6 +44,7 @@ module Preprocesser(
     output wire  signed [15:0] LUT_entries_13_o    ,
     output wire  signed [15:0] LUT_entries_14_o    ,
     output wire  signed [15:0] LUT_entries_15_o
+    */
     );
 
     wire [31:0] LUT_entries_0     ;
@@ -53,6 +55,7 @@ module Preprocesser(
     wire [31:0] LUT_entries_5     ;
     wire [31:0] LUT_entries_6     ;
     wire [31:0] LUT_entries_7     ;
+    /*
     wire [31:0] LUT_entries_8     ;
     wire [31:0] LUT_entries_9     ;
     wire [31:0] LUT_entries_10    ;
@@ -61,6 +64,8 @@ module Preprocesser(
     wire [31:0] LUT_entries_13    ;
     wire [31:0] LUT_entries_14    ;
     wire [31:0] LUT_entries_15    ;
+    */
+    /*
     reg  [15:0] LUT_entries_0_sat ;
     reg  [15:0] LUT_entries_1_sat ;
     reg  [15:0] LUT_entries_2_sat ;
@@ -77,7 +82,9 @@ module Preprocesser(
     reg  [15:0] LUT_entries_13_sat;
     reg  [15:0] LUT_entries_14_sat;
     reg  [15:0] LUT_entries_15_sat;
-
+    */
+    // LUT entries calculation(Old version)
+    /***************************************************************
     assign LUT_entries_15  = 16'b0000_0000_0000_0000 ;
     assign LUT_entries_14  = 16'b0000_0000_0000_0000 ;
     assign LUT_entries_13  = Act0_i + Act1_i + Act2_i;
@@ -94,6 +101,15 @@ module Preprocesser(
     assign LUT_entries_2   =          Act1_i - Act2_i;
     assign LUT_entries_1   =                   Act2_i;
     assign LUT_entries_0   = 16'b0000_0000_0000_0000 ;
+    ****************************************************************/
+    assign LUT_entries_0   =                   Act2_i;
+    assign LUT_entries_1   =          Act1_i         ;
+    assign LUT_entries_2   = Act0_i                  ;
+    assign LUT_entries_3   =          Act1_i - Act2_i;
+    assign LUT_entries_4   = Act0_i - Act1_i - Act2_i;
+    assign LUT_entries_5   = Act0_i - Act1_i + Act2_i;
+    assign LUT_entries_6   = Act0_i + Act1_i - Act2_i;
+    assign LUT_entries_7   = Act0_i + Act1_i + Act2_i;
     /*************************************************************
     *      Entries   Weight     Code       Weight_n     Code     *     
     *      0         0  0  0   0 0000      0  0  0     1 0000    *
@@ -114,6 +130,7 @@ module Preprocesser(
     *      15        NULL      0 1111       NULL       1 1111    *
     **************************************************************/
     // Saturation
+    /*
     always @(*) begin
         if(~LUT_entries_0[31] && |LUT_entries_0[30:15]) LUT_entries_0_sat = 16'b0111_1111_1111_1111;
         else if (LUT_entries_0[31] && ~(&LUT_entries_0[30:15])) LUT_entries_0_sat = 16'b1000_0000_0000_0000;
@@ -155,7 +172,6 @@ module Preprocesser(
         else if (LUT_entries_6[31] && ~(&LUT_entries_6[30:15])) LUT_entries_6_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_6_sat = LUT_entries_6[15:0];
     end
-
     always @(*) begin
         if(~LUT_entries_7[31] && |LUT_entries_7[30:15]) LUT_entries_7_sat = 16'b0111_1111_1111_1111;
         else if (LUT_entries_7[31] && ~(&LUT_entries_7[30:15])) LUT_entries_7_sat = 16'b1000_0000_0000_0000;
@@ -209,15 +225,17 @@ module Preprocesser(
         else if (LUT_entries_15[31] && ~(&LUT_entries_15[30:15])) LUT_entries_15_sat = 16'b1000_0000_0000_0000;
         else LUT_entries_15_sat = LUT_entries_15[15:0];
     end
+    */
     
-    dff #(16) dff_LUT_entries_0  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_0_sat) , .q_o(LUT_entries_0_o) );
-    dff #(16) dff_LUT_entries_1  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_1_sat) , .q_o(LUT_entries_1_o) );
-    dff #(16) dff_LUT_entries_2  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_2_sat) , .q_o(LUT_entries_2_o) );
-    dff #(16) dff_LUT_entries_3  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_3_sat) , .q_o(LUT_entries_3_o) );
-    dff #(16) dff_LUT_entries_4  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_4_sat) , .q_o(LUT_entries_4_o) );
-    dff #(16) dff_LUT_entries_5  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_5_sat) , .q_o(LUT_entries_5_o) );
-    dff #(16) dff_LUT_entries_6  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_6_sat) , .q_o(LUT_entries_6_o) );
-    dff #(16) dff_LUT_entries_7  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_7_sat) , .q_o(LUT_entries_7_o) );
+    dff #(32) dff_LUT_entries_0  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_0) , .q_o(LUT_entries_0_o) );
+    dff #(32) dff_LUT_entries_1  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_1) , .q_o(LUT_entries_1_o) );
+    dff #(32) dff_LUT_entries_2  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_2) , .q_o(LUT_entries_2_o) );
+    dff #(32) dff_LUT_entries_3  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_3) , .q_o(LUT_entries_3_o) );
+    dff #(32) dff_LUT_entries_4  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_4) , .q_o(LUT_entries_4_o) );
+    dff #(32) dff_LUT_entries_5  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_5) , .q_o(LUT_entries_5_o) );
+    dff #(32) dff_LUT_entries_6  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_6) , .q_o(LUT_entries_6_o) );
+    dff #(32) dff_LUT_entries_7  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_7) , .q_o(LUT_entries_7_o) );
+    /*
     dff #(16) dff_LUT_entries_8  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_8_sat) , .q_o(LUT_entries_8_o) );
     dff #(16) dff_LUT_entries_9  (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_9_sat) , .q_o(LUT_entries_9_o) );
     dff #(16) dff_LUT_entries_10 (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_10_sat), .q_o(LUT_entries_10_o));
@@ -226,5 +244,5 @@ module Preprocesser(
     dff #(16) dff_LUT_entries_13 (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_13_sat), .q_o(LUT_entries_13_o));
     dff #(16) dff_LUT_entries_14 (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_14_sat), .q_o(LUT_entries_14_o));
     dff #(16) dff_LUT_entries_15 (.clk(clk), .rst_n_i(rst_n_i), .en_i(dff_en_i), .d_i(LUT_entries_15_sat), .q_o(LUT_entries_15_o));
-
+    */
 endmodule
