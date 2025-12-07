@@ -62,7 +62,7 @@ The repository contains 3 main directories, corresponding to hardware design, da
 
 
 2. **Hardware Simulation**  
-   Use Vivado 2019.2 to simulate the hardware design (from `src/`). Load the generated hex files as input and obtain the simulation result log `result_output.log`.
+   Use Vivado 2019.2 to simulate the hardware design (from `src/`, you can use the `tb_top.sv` as the testbench). Load the generated hex files as input and obtain the simulation result log `result_output.log`. You should remember to change the path in `tb_top.sv` file.
    <img width="1280" height="749" alt="image" src="https://github.com/user-attachments/assets/e9f06a4d-3c66-401e-ad55-140af89e2c6b" />
    <img width="544" height="578" alt="image" src="https://github.com/user-attachments/assets/4049f2a1-2648-46b1-a5c2-5e6626de3f91" />
 
