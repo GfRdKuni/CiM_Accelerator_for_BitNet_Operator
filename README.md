@@ -29,6 +29,7 @@ The repository contains 3 main directories, corresponding to hardware design, da
 
 3. **`docs/`**: Contains `BITNET&存算一体.pptx`, a design document explaining BitNet principles and the CiM architecture.  
 
+4. **`sim/`**: Testbench files for hardware simulation, including `tb_top.sv` and other verification modules.
 
 ## Hardware Design Features  
 - **Storage Design**:  
@@ -44,7 +45,25 @@ The repository contains 3 main directories, corresponding to hardware design, da
   - Each channel has `N×K/3` MUXes (16 inputs each) and sign generation modules.  
   - Number of adders per channel: `N×K/3` (derived from the accumulation formula `1+1+2+4+…+2^(lb(K/3)-1)`), enabling efficient accumulation.  
 
-- **Computation Flow**: Magnitudes are used to precompute LUT entries, and signs generate signed results. Matrix multiplication is parallelized via LUTs and adder trees.  
+- **Computation Flow**: Magnitudes are used to precompute LUT entries, and signs generate signed results. Matrix multiplication is parallelized via LUTs and adder trees.
+
+## Version 2.0 Architecture Enhancements  
+
+In the updated design, we introduce several key enhancements to improve efficiency, area utilization, and sparsity awareness, inspired by the BitNet.cpp TL2 kernel and recent CiM research:
+
+### 1. 5-Pack-3 Zero-Aware Encoding & Hierarchical Dynamic SM LUT  
+- **Encoding Scheme**: Ternary weights {-1, 0, +1} are grouped in 5-bit packs and mapped to 3-trit representations, reducing storage overhead and improving memory alignment.  
+- **Zero-Awareness**: The encoding explicitly preserves zero values, enabling better exploitation of weight sparsity in LUT-based computations.  
+- **Hierarchical LUT**: A two-stage lookup table structure reduces area overhead while maintaining low-latency access to precomputed partial sums. Only 8 out of 14 non-zero weight combinations are stored directly; others are derived via single addition, reducing LUT size by ~43% while retaining full functionality.
+
+### 2. Sign-Magnitude Dual Adder Tree  
+- **Data Representation**: We adopt a sign-magnitude format for activations and weights, reducing bit-switching activity and multiplication cost compared to two’s complement.  
+- **Dual Unsigned Adder Trees**: Two separate adder trees process magnitude values, with a single final subtractor handling sign resolution. This minimizes the overhead of signed arithmetic to only one stage.  
+- **Benefits**:  
+  - Lower dynamic power consumption  
+  - Reduced critical path delay  
+  - Better compatibility with LUT-based precomputation
+
 
 
 ## Deployment Flow  
