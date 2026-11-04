@@ -1,0 +1,13 @@
+src/dff.v
+src/oprand_mux.v
+src/Signed_Adder.v
+src/Preprocesser.v
+src/LUT_MUX.v
+src/Sign_Gen.v
+src/Adder_Tree_8_to_1.v
+src/Accumulator.v
+src/Data_top.v
+src/Ctrl_top.v
+src/Top.v
+src/Para_Top.v
+src/portable/SRAM.v

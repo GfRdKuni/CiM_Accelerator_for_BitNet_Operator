@@ -1,0 +1,14 @@
+name: Verify portable CiM RTL
+on: [push, pull_request, workflow_dispatch]
+jobs:
+  simulate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install simulator
+        run: sudo apt-get update && sudo apt-get install -y iverilog
+      - name: Check LUT arithmetic and public parallel interface
+        run: python3 Scripts/verify.py
