@@ -92,7 +92,11 @@ bench covers its legal codes. End-to-end comparisons use only activations in
 describe the original local 16-bit behavior, including minimum-value negation;
 they do not establish general int32 matrix-multiplication correctness.
 
-Not run: hosted GitHub Actions, Vivado/vendor-IP equivalence, synthesis,
+Hosted [GitHub Actions41765685181](https://github.com/GfRdKuni/CiM_Accelerator_for_BitNet_Operator/actions/runs/41765685181)
+passed on code commit `94714784969f368fc7bb25bda4bcc2e9facd88d6`.
+This later documentation update does not imply a new hardware result.
+
+Not run: Vivado/vendor-IP equivalence, synthesis,
 place-and-route, timing/power characterization, FPGA/silicon execution, the
 incomplete legacy MATLAB workflow, and simulation of all 16 default lanes.
 The portable inferred memories have no tested read/write-collision contract.
